@@ -8,6 +8,8 @@ import userRoutes from './routes/users.js'
 import loginRoutes from './routes/login.js'
 
 dotenv.config()
+console.log("MONGO_URI =", process.env.MONGO_URI);
+
 
 const app = express()
 
