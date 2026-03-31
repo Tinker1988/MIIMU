@@ -5,7 +5,7 @@ import { useUser } from '@/context/UserContext'
 export function Navbar() {
   const { user, logoutUser } = useUser()
   const navigate = useNavigate()
-  const location = useLocation()
+  
 
   const handleLogout = () => {
     logoutUser()

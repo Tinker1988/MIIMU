@@ -21,7 +21,7 @@ export default function CreateRecipe() {
   const [status, setStatus] = useState("Submitted")
   const [priority, setPriority] = useState("Medium")
   const [documents, setDocuments] = useState("")
-  const [workflowSteps, setWorkflowSteps] = useState("")
+  const [workflowSteps] = useState("")
   const [imageUrl, setImageUrl] = useState("")
   const [error, setError] = useState("")
 
