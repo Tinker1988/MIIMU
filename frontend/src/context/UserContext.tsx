@@ -1,9 +1,10 @@
-import { setToken } from "@/api";
-import { createContext, useState, useContext, type ReactNode, useEffect } from "react";
+import { setToken } from "@/api"
+import { createContext, useState, useContext, type ReactNode, useEffect } from "react"
 
 interface User {
   username: string
   name?: string
+  role: 'admin' | 'user'
   token: string
 }
 
@@ -18,7 +19,13 @@ const UserContext = createContext<UserContextType | undefined>(undefined)
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(() => {
     const saved = localStorage.getItem('user')
-    return saved ? JSON.parse(saved) : null
+    if (!saved) return null
+
+    const parsed = JSON.parse(saved)
+    return {
+      ...parsed,
+      role: parsed.role === 'admin' ? 'admin' : 'user',
+    }
   })
 
   useEffect(() => {

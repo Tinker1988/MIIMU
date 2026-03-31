@@ -26,7 +26,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 
     try {
       await api.post("/users/signup", { name, username, password })
-      navigate("/login") // redirect to login after signup
+      navigate("/user-login")
     } catch (err: any) {
       setError(err.response?.data?.error || "Signup failed")
     }
@@ -34,14 +34,14 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden p-0">
+      <Card className="overflow-hidden border-white/60 bg-white/90 p-0 shadow-[0_24px_80px_rgba(15,23,42,0.08)]">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form onSubmit={handleSubmit} className="p-6 md:p-8">
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl font-bold">Create your account</h1>
                 <p className="text-muted-foreground text-sm text-balance">
-                  Enter your name and create a username to start sharing recipes!
+                  Register as a user to create a new application and track your existing project.
                 </p>
               </div>
 
@@ -77,8 +77,8 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
           <div className="bg-muted relative hidden md:block">
             <img
               src="/signup-form.jpg"
-              alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+              alt="Solar field installation planning"
+              className="absolute inset-0 h-full w-full object-cover"
             />
           </div>
         </CardContent>

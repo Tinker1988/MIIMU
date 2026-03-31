@@ -5,10 +5,14 @@ import User from '../models/user.js'
 import { authenticateToken } from "../utils/middleware.js"
 
 const router = express.Router()
+const RESERVED_ADMIN_USERNAME = 'miimu'
 
-// POST /api/users/signup
 router.post('/signup', async (req, res) => {
   const { username, name, password } = req.body
+
+  if (!username || username.trim().toLowerCase() === RESERVED_ADMIN_USERNAME) {
+    return res.status(400).json({ error: 'This username is reserved. Please choose another username.' })
+  }
 
   if (!password || password.length < 3) {
     return res.status(400).json({ error: 'Password must be at least 3 characters' })
@@ -18,7 +22,7 @@ router.post('/signup', async (req, res) => {
   const passwordHash = await bcrypt.hash(password, saltRounds)
 
   try {
-    const user = new User({ username, name, passwordHash })
+    const user = new User({ username: username.trim(), name, role: 'user', passwordHash })
     const savedUser = await user.save()
     res.status(201).json(savedUser)
   } catch (err) {
@@ -26,7 +30,6 @@ router.post('/signup', async (req, res) => {
   }
 })
 
-// POST /api/users/save/:recipeId
 router.post('/save/:recipeId', authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
@@ -46,7 +49,20 @@ router.post('/save/:recipeId', authenticateToken, async (req, res) => {
   }
 })
 
-// GET all saved recipes for the user
+router.delete('/save/:recipeId', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+    const recipeId = req.params.recipeId
+
+    user.savedRecipes = user.savedRecipes.filter((id) => id.toString() !== recipeId)
+    await user.save()
+
+    res.status(200).json({ message: 'Recipe removed from saved list', savedRecipes: user.savedRecipes })
+  } catch (err) {
+    res.status(400).json({ error: err.message })
+  }
+})
+
 router.get('/saved', authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).populate('savedRecipes')
